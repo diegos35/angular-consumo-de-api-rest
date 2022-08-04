@@ -90,4 +90,16 @@ export class ProductsComponent implements OnInit {
       this.productChosen = data; //slide
     });
   }
+
+  deleteProduct(idProduct: any) {
+    // const id = this.productChosen.id;
+    const id = idProduct;
+    this.productsService.delete(id)
+    .subscribe(() =>{
+      const producIndex = this.products
+        .findIndex(item => item.id === this.productChosen.id )
+      this.products.splice(producIndex, 1);
+      this.showProductDetail = false;
+    });
+  }
 }
