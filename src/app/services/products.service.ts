@@ -15,6 +15,12 @@ export class ProductsService {
     private http: HttpClient
   ) { }
 
+    getProductsByPage(limit: number, offset: number){
+      return this.http.get<Product[]>(this.apiUrl, {
+        params: { limit, offset}
+      });
+    }
+
   getAllProducts(): Observable<Product[]> {
     return this.http.get<Product[]>(this.apiUrl);
   }
