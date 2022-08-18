@@ -4,6 +4,9 @@ import { CreateProductDTO, Product, UpdateProductDTO } from '../../models/produc
 
 import { StoreService } from '../../services/store.service';
 import { ProductsService } from '../../services/products.service';
+import { switchMap } from 'rxjs/operators'; //(depende una de otra)para evitar el callback hell
+import { zip } from 'rxjs'; //(en paralelo)nos permite enviar adjuntar dos observadores y recibir la res al tiempo
+
 
 @Component({
   selector: 'app-products',
@@ -71,6 +74,22 @@ export class ProductsComponent implements OnInit {
       this.statusDetail = 'error';
     });
   }
+
+  readAnUpdate(id: string){
+    this.productsService.getProduct(id)
+    .pipe(
+      switchMap((product) => this.productsService.update(product.id, {title: 'change'})),
+      /* switchMap((product) => this.productsService.update(product.id, {title: 'change'})),*/
+    ).subscribe(data => {
+      console.log(data);
+    })
+    this.productsService.fetchReadAndpdate(id, {title: 'new'})
+    .subscribe(response => {
+      const read = response[0]
+      const updated = response[1]
+    })
+  }
+
   createNewProduct() {
     const product: CreateProductDTO = {
       title: 'New Product',

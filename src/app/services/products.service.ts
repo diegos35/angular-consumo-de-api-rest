@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpParams, HttpStatusCode }  from '@angular/common/http';
 
 import { CreateProductDTO, Product, UpdateProductDTO } from './../models/product.model';
-import { Observable, throwError } from 'rxjs';
+import { Observable, throwError, zip } from 'rxjs';
 import { catchError, map, retry } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 
@@ -23,7 +23,7 @@ export class ProductsService {
     });
   }
 
-  getAllProducts(limit?: number, offset?: number) {
+  getAllProducts(limit?: number, offset?: number): Observable<Product[]> {
     let params = new HttpParams();
     if (limit && offset) {
       params = params.set('limit', limit);
@@ -74,5 +74,12 @@ export class ProductsService {
 
   delete(id: string){
     return this.http.delete<Product>(`${this.apiUrl}/${id}`)
+  }
+
+  fetchReadAndpdate(id: string, dto: UpdateProductDTO){
+    return zip(
+      this.getProduct(id),
+      this.update(id, dto),
+    );
   }
 }
