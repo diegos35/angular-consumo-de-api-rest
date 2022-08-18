@@ -40,12 +40,13 @@ export class ProductsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.loadMore();
-     /* this.productsService.getAllProducts()
+    //this.loadMore(); 
+     this.productsService.getAllProducts(10, 0)
     //this.productsService.getProductsByPage(10,0)
     .subscribe(res => {
       this.products = res;
-    });  */
+      this.offset += this.limit;
+    }); 
   }
 
   onAddToShoppingCart(product: Product) {
