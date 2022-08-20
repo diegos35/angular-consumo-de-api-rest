@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { map, switchMap } from 'rxjs/operators';
+import { map, switchMap, tap } from 'rxjs/operators';
 import { User } from 'src/app/models/user.model';
 import { AuthService } from 'src/app/services/auth.service';
 
@@ -41,6 +41,7 @@ export class NavComponent implements OnInit {
     this.authService
     .login('diego@mail.com', '123')
     .pipe(
+      tap( token =>this.token = token.access_token),
       switchMap((res) => this.authService.getProfile(res.access_token)),
       switchMap((profile) => this.authService.setCurrentProfile(profile).pipe(
         map(item =>{
@@ -49,7 +50,6 @@ export class NavComponent implements OnInit {
       )
       )
     ).subscribe()
-     
   }  
   
 
