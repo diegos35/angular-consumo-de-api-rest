@@ -1,3 +1,7 @@
+Crear interceptor
+ng g interceptor interceptors/time --flat
+
+
 Autorization <type> <credentials>
 Autorization Bear token
 
