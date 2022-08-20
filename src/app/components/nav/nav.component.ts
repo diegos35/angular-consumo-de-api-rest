@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { map, switchMap } from 'rxjs/operators';
 import { User } from 'src/app/models/user.model';
 import { AuthService } from 'src/app/services/auth.service';
 
@@ -25,6 +26,11 @@ export class NavComponent implements OnInit {
     this.storeService.myCart$.subscribe(products => {
       this.counter = products.length;
     });
+    this.authService.profileStore$.subscribe(profile => {
+      console.log('init',profile);
+      this.profile = profile;
+    });
+   
   }
 
   toggleMenu() {
@@ -32,6 +38,49 @@ export class NavComponent implements OnInit {
   }
 
   login(){
+    this.authService
+    .login('diego@mail.com', '123')
+    .pipe(
+      switchMap((res) => this.authService.getProfile(res.access_token)),
+      switchMap((profile) => this.authService.setCurrentProfile(profile).pipe(
+        map(item =>{
+          this.profile = item
+        })
+      )
+      )
+    ).subscribe()
+     
+  }  
+  
+
+/* 
+  login() {
+    this.authService.loginAndGet("diego@mail.com", "123")
+    .subscribe(rta => {
+     console.log(rta);
+    })
+  } */
+
+
+/*   login(){
+    this.authService.login("diego@mail.com", "123")
+    .pipe(
+      switchMap(({access_token})=>{
+        return this.authService.getProfile(access_token).pipe(
+          map(item =>{
+            this.profile = item,
+            this.token = access_token
+          })
+        )
+      })
+    ).subscribe(response=>{      
+      console.log(response);
+    })
+  } */
+
+
+
+/*   login(){
     this.authService.login("diego@mail.com", "123")
     .subscribe(rta => {
       console.log(rta.access_token);
@@ -45,6 +94,6 @@ export class NavComponent implements OnInit {
     .subscribe(user =>{
     this.profile = user;
     });
-  }
+  } */
 
 }

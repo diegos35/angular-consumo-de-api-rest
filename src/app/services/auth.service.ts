@@ -4,6 +4,7 @@ import { environment } from 'src/environments/environment';
 import { Auth } from './../models/auth.model';
 import { User } from '../models/user.model';
 import { switchMap } from 'rxjs/operators';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -11,6 +12,9 @@ import { switchMap } from 'rxjs/operators';
 export class AuthService {
 
   private apiUrl= `${environment.API_URL}api/auth`;
+
+  private profileStore = new BehaviorSubject<User>({} as User);
+  profileStore$ = this.profileStore.asObservable();
 
   constructor(
     private http: HttpClient
@@ -30,4 +34,17 @@ export class AuthService {
   } 
   
 
-}
+  loginAndGet(email: string, password: string) {
+    return this.login(email, password)
+    .pipe(
+      switchMap(rta => this.getProfile(rta.access_token)),
+    )
+  }
+
+  setCurrentProfile(user: User) {
+    this.profileStore.next(user);
+    return this.profileStore$;
+  }
+  
+
+} 
