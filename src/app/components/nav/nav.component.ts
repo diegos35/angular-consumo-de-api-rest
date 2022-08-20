@@ -14,7 +14,6 @@ export class NavComponent implements OnInit {
 
   activeMenu = false;
   counter = 0;
-  token= '';
   profile: User | null = null;
 
   constructor(
@@ -26,10 +25,10 @@ export class NavComponent implements OnInit {
     this.storeService.myCart$.subscribe(products => {
       this.counter = products.length;
     });
-    this.authService.profileStore$.subscribe(profile => {
+    /* this.authService.profileStore$.subscribe(profile => {
       console.log('init',profile);
       this.profile = profile;
-    });
+    }); */
    
   }
 
@@ -37,12 +36,21 @@ export class NavComponent implements OnInit {
     this.activeMenu = !this.activeMenu;
   }
 
+  
   login(){
+    this.authService.loginAndGet('diego@mail.com', '123')
+    .subscribe(user => {
+      this.profile = user;
+    })
+  }
+
+  /* sin interceptor */
+  /* login(){
     this.authService
     .login('diego@mail.com', '123')
     .pipe(
-      tap( token =>this.token = token.access_token),
-      switchMap((res) => this.authService.getProfile(res.access_token)),
+      // tap( token =>this.token = token.access_token),  //ya se guarda en el interceptor(localStorage)
+      switchMap((res) => this.authService.getProfile()),
       switchMap((profile) => this.authService.setCurrentProfile(profile).pipe(
         map(item =>{
           this.profile = item
@@ -50,7 +58,7 @@ export class NavComponent implements OnInit {
       )
       )
     ).subscribe()
-  }  
+  } */  
   
 
 /* 
