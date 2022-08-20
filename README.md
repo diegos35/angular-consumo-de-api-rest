@@ -1,3 +1,9 @@
+Endpoints
+https://young-sands-07814.herokuapp.com/api/users
+https://young-sands-07814.herokuapp.com/api/auth/login
+
+npm run start:proxy
+
 # MyStoreApi
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli)
